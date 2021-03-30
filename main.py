@@ -7,27 +7,29 @@ driver = Chrome()
 
 def yes_delivery():
     sleep(2)
-    btn = driver.find_element_by_css_selector(".fpsmart__close")
     try:
+        btn = driver.find_element_by_css_selector(".fpsmart__close")
         btn.click()
     except:
-        return
-    btn = driver.find_element_by_css_selector("#delivery_ok button")
-    if not btn: return
-    btn.click()
-    btn = driver.find_element_by_css_selector("form#delivery_form button")
-    btn.click()
-    sleep(2)
+        print("Could not click fpsmart__close")
+    try:
+        btn = driver.find_element_by_css_selector("#delivery_ok button")
+        if not btn: return
+        btn.click()
+        btn = driver.find_element_by_css_selector("form#delivery_form button")
+        btn.click()
+        sleep(2)
+    except:
+        print("Looks like no delivery acceptance required...")
 
 
 def add_ingrid(name, order):
-    mayo = [td for td in driver.find_elements_by_css_selector("tr.souce_row") if td.find_element_by_class_name("souce_row__title").text == name][0]
+    for mayo in [td for td in driver.find_elements_by_css_selector("tr.souce_row") if td.find_element_by_class_name("souce_row__title").text == name]:
+        mayo.find_element_by_css_selector("label.check-container input[type=checkbox]").click()
+        mayo.find_element_by_css_selector("select.additionsize option:nth-child("+str(order)+")").click()
 
-    mayo.find_element_by_css_selector("label.check-container input[type=checkbox]").click()
-    mayo.find_element_by_css_selector("select.additionsize option:nth-child("+str(order)+")").click()
 
-
-def add_to_cart(address, qty = 1, ingrids = []):
+def add_to_cart(address, qty=1, ingrids=[], lavash=None):
     driver.get(address)
     btn = driver.find_element_by_css_selector("button.add-to-cart")
     btn.click()
@@ -36,6 +38,8 @@ def add_to_cart(address, qty = 1, ingrids = []):
         add_ingrid(each[0], each[1])
     for i in range(1,qty):
         driver.find_element_by_id("qtyplus").click()
+    if lavash:
+        [label.click() for label in driver.find_elements_by_css_selector(".radio-container.spec") if label.text.startswith(lavash)]
 
     driver.find_element_by_css_selector(".cart_continue button.delivery-type__addorder_btn").click()
     sleep(2)
@@ -58,11 +62,12 @@ def make_order():
     driver.find_element_by_css_selector("form#orderForm textarea[name=comment]").send_keys("Подъезд - 2;\nДомофон не работает - звоните на мобильный;\nОплата картой")
 
 
-# add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
-add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_3")
-add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xxl", 1, [("Майонез", 2)] )
-add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl")
-make_order()
+if __name__ == "__main__":
+    # add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
+    # add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_3")
+    add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xxl", 2, [("Майонез", 2)], "Сырный")
+    # add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl")
+    make_order()
 
 
 

@@ -71,22 +71,21 @@ def make_order():
 
 
 if __name__ == "__main__":
-    # add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
-    # add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl")
 
-    add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_3", 
+    add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl")
+
+    add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_1", 
             comment="Без майонеза", 
             ingrids=[("Шампиньоны жареные", "2")],
             lavash="Сырный")
 
     add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xxl", 
             qty=1, 
-            ingrids=[("Майонез", 2)], 
+            ingrids=[("Майонез", 1)], 
             lavash="Сырный")
+
+    #add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
+
     make_order()
-
-
-
-
 
 

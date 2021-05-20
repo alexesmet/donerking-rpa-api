@@ -24,10 +24,14 @@ def yes_delivery():
         print("Looks like no delivery acceptance required...")
 
 
-def add_ingrid(name, order):
+def add_ingrid(ingrid):
+    name = ingrid[0]
+
     for mayo in [td for td in driver.find_elements_by_css_selector("tr.souce_row") if td.find_element_by_class_name("souce_row__title").text == name]:
         mayo.find_element_by_css_selector("label.check-container input[type=checkbox]").click()
-        mayo.find_element_by_css_selector("select.additionsize option:nth-child("+str(order)+")").click()
+        if len(ingrid) > 1:
+            order = ingrid[1]
+            mayo.find_element_by_css_selector("select.additionsize option:nth-child("+str(order)+")").click()
 
 
 def add_to_cart(address, qty=1, ingrids=[], lavash=None, comment=None):
@@ -39,7 +43,7 @@ def add_to_cart(address, qty=1, ingrids=[], lavash=None, comment=None):
         [label.click() for label in driver.find_elements_by_css_selector(".radio-container.spec") if label.text.startswith(lavash)]
         sleep(0.5)
     for each in ingrids:
-        add_ingrid(each[0], each[1])
+        add_ingrid(each)
         sleep(0.5)
     if comment:
         driver.find_element_by_css_selector("input.order__comment").send_keys(comment)
@@ -65,6 +69,7 @@ def make_order():
     driver.find_element_by_css_selector("form#orderForm input[name=last_name]").send_keys("Метлицкий")
     driver.find_element_by_css_selector("form#orderForm input[name=first_name]").send_keys("Алексей")
     for d in list("447373590"): 
+   #for d in list("293519058"): 
         driver.find_element_by_css_selector("form#orderForm input[name=phone]").send_keys(d)
 
     driver.find_element_by_css_selector("form#orderForm textarea[name=comment]").send_keys("Подъезд - 2;\nДомофон не работает - звоните на мобильный;\nОплата картой")
@@ -72,19 +77,31 @@ def make_order():
 
 if __name__ == "__main__":
 
-    add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl")
+    # add_to_cart("https://donerking.by/menu/doner_kebab_po_belarusski_xl",
+    #         comment="Без майонеза"
+    #         )
 
-    add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_1", 
-            comment="Без майонеза", 
-            ingrids=[("Шампиньоны жареные", "2")],
-            lavash="Сырный")
+    # add_to_cart("https://donerking.by/menu/kurochka_bbq_s_ikroy_iz_zapechennyih_ovoschey_na_u_1", 
+    #         comment="Без майонеза", 
+    #         ingrids=[("Шампиньоны жареные", "2")],
+    #         lavash="Сырный")
 
     add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xxl", 
             qty=1, 
             ingrids=[("Майонез", 1)], 
             lavash="Сырный")
 
-    #add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
+    # add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xl", 
+    #         comment="Без майонеза", 
+    #         qty=1, 
+    #         lavash="Сырный")
+
+    # add_to_cart("https://donerking.by/menu/shaurma_with_chicken_xxl", 
+    #         qty=1, 
+    #         ingrids=[("Картофель фри", ), ("Соус горчичный", ), ("Огурец свежий", )], 
+    #         )
+
+    # add_to_cart("https://donerking.by/menu/banditos_s_kuritsey_xl")
 
     make_order()
 
